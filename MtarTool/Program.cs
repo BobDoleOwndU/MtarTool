@@ -17,7 +17,7 @@ namespace MtarTool
         } //struct file ends
 
         static int fileNameOffset = 0x20 * 0x2;
-        static int fileOffset;
+        static int fileOffset = fileNameOffset;
 
         List<file> fileList = new List<file>(0);
 
@@ -38,15 +38,17 @@ namespace MtarTool
             {
                 file File1;
 
-                if(hex.Substring((fileNameOffset + 0x8) * 0x2, 0x1 * 0x2) != "FC")
+                if(hex.Substring((fileOffset + 0x7) * 0x2, 0x1 * 0x2) != "FC")
                 {
-                    Console.WriteLine(hex.Substring(fileNameOffset * 0x2 + 0x8 * 0x2, 0x1 * 0x2));
+                    Console.WriteLine(hex.Substring((fileOffset + 0x7) * 0x2, 0x1 * 0x2));
                     Console.WriteLine("End of file section");
+                    Console.WriteLine(fileOffset);
                     run = false;
                 } //if ends
                 else
                 {
-                    Console.WriteLine(hex.Substring(fileNameOffset, 0x7 * 0x2));
+                    Console.WriteLine(hex.Substring(fileOffset, 0x7 * 0x2));
+                    fileOffset = fileOffset + 0x10 * 0x2;
                 }
             } //while ends
         } //function GetFileNames ends
