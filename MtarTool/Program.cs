@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using MtarTool.Core.Mtar;
 
 namespace MtarTool
 {
@@ -13,39 +10,12 @@ namespace MtarTool
         {
             using (FileStream input = new FileStream(@"C:\Program Files (x86)\Steam\steamapps\common\MGS_TPP\master\chunk0_dat\Assets\tpp\pack\player\motion\player2_facial_snake_fpk\Assets\tpp\motion\mtar\player2\TppPlayer2Facial.mtar", FileMode.Open))
             {
-                Read(input);
+                MtarFile mtarFile = new MtarFile();
+
+                mtarFile.Read(input);
+                mtarFile.ListFiles();
             } //using ends
         } //function Main ends
-
-        static void Read(Stream input)
-        {
-            BinaryReader reader = new BinaryReader(input, Encoding.Default, true);
-
-            //line 1
-            uint signature = reader.ReadUInt32();
-            uint fileCount = reader.ReadUInt32();
-            uint unknown1 = reader.ReadUInt32();
-            uint unknown2 = reader.ReadUInt32();
-
-            //line 2
-            byte[] padding1 = reader.ReadBytes(16);
-
-            for(int i = 0; i < fileCount; i++)
-            {
-                ReadEntry(input);
-            } //if ends
-        } //function Read ends
-
-        static void ReadEntry(Stream input)
-        {
-            BinaryReader reader = new BinaryReader(input, Encoding.Default, true);
-
-            string fileName = getFileName(reader.ReadBytes(8));
-            uint offset = reader.ReadUInt32();
-            uint fileSize = reader.ReadUInt32();
-
-            Console.WriteLine(fileName);
-        } //function ReadEntry ends
 
         static string getFileName(byte[] arr)
         {
