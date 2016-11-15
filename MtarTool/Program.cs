@@ -9,48 +9,82 @@ namespace MtarTool
 {
     class Program
     {
-        struct file
-        {
-            string name;
-            int offset;
-            int length;
-        } //struct file ends
-
-        static int fileNameOffset = 0x20 * 0x2;
-        static int fileOffset = fileNameOffset;
-
-        List<file> fileList = new List<file>(0);
-
         static void Main(string[] args)
         {
-            GetFileInfo();
+            using (FileStream input = new FileStream(@"C:\Program Files (x86)\Steam\steamapps\common\MGS_TPP\master\chunk0_dat\Assets\tpp\pack\player\motion\player2_facial_snake_fpk\Assets\tpp\motion\mtar\player2\TppPlayer2Facial.mtar", FileMode.Open))
+            {
+                Read(input);
+            } //using ends
         } //function Main ends
 
-        static void GetFileInfo()
+        static void Read(Stream input)
         {
-            string path = @"C:\Program Files (x86)\Steam\steamapps\common\MGS_TPP\master\chunk0_dat\Assets\tpp\pack\player\motion\player2_facial_snake_fpk\Assets\tpp\motion\mtar\player2\TppPlayer2Facial.mtar";
-            bool run = true;
-            
-            var file = File.ReadAllBytes(path);
-            string hex = BitConverter.ToString(file).Replace("-", String.Empty);
+            BinaryReader reader = new BinaryReader(input, Encoding.Default, true);
 
-            while(run)
+            //line 1
+            uint signature = reader.ReadUInt32();
+            uint fileCount = reader.ReadUInt32();
+            uint unknown1 = reader.ReadUInt32();
+            uint unknown2 = reader.ReadUInt32();
+
+            //line 2
+            byte[] padding1 = reader.ReadBytes(16);
+
+            for(int i = 0; i < fileCount; i++)
             {
-                file File1;
+                ReadEntry(input);
+            } //if ends
+        } //function Read ends
 
-                if(hex.Substring((fileOffset + 0x7) * 0x2, 0x1 * 0x2) != "FC")
+        static void ReadEntry(Stream input)
+        {
+            BinaryReader reader = new BinaryReader(input, Encoding.Default, true);
+
+            string fileName = getFileName(reader.ReadBytes(8));
+            uint offset = reader.ReadUInt32();
+            uint fileSize = reader.ReadUInt32();
+
+            Console.WriteLine(fileName);
+        } //function ReadEntry ends
+
+        static string getFileName(byte[] arr)
+        {
+            byte[] nameByte = arr;
+            Array.Reverse(nameByte);
+
+            switch (nameByte[1])
+            {
+                case 0x50:
+                    nameByte[1] = 0x00;
+                    break;
+                case 0x51:
+                    nameByte[1] = 0x01;
+                    break;
+                case 0x52:
+                    nameByte[1] = 0x02;
+                    break;
+                case 0x53:
+                    nameByte[1] = 0x03;
+                    break;
+            } //switch ends
+
+            string nameString = BitConverter.ToString(nameByte).Replace("-", "");
+
+            if (nameString.Substring(2, 2) == "00")
+            {
+                nameString = nameString.Substring(4, 12);
+                
+                if (nameString.Substring(0, 1) == "0")
                 {
-                    Console.WriteLine(hex.Substring((fileOffset + 0x7) * 0x2, 0x1 * 0x2));
-                    Console.WriteLine("End of file section");
-                    Console.WriteLine(fileOffset);
-                    run = false;
+                    nameString = nameString.Substring(1, 11);
                 } //if ends
-                else
-                {
-                    Console.WriteLine(hex.Substring(fileOffset, 0x7 * 0x2));
-                    fileOffset = fileOffset + 0x10 * 0x2;
-                }
-            } //while ends
-        } //function GetFileNames ends
+            } //if ends
+            else if(nameString.Substring(2, 1) == "0")
+            {
+                nameString = nameString.Substring(3, 13);
+            } //else if ends
+
+            return nameString;
+        } //function getFileName ends
     } //class Program ends
 } //namespace MtarTool ends
