@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using MtarTool.Core.Utility;
 
 namespace MtarTool.Core.Mtar
 {
     public class MtarFile
     {
         uint signature;
-        uint signature2;
         uint fileCount;
         uint unknown1;
         uint unknown2;
@@ -33,13 +33,13 @@ namespace MtarTool.Core.Mtar
             } //for ends
         } //method Read ends
 
-        public void ListFiles()
+        public void Export(Stream output, string path)
         {
             for(int i = 0; i < files.Count; i++)
             {
-                string nameString = BitConverter.ToString(files[i].name).Replace("-", "");
-                Console.WriteLine(nameString);
+                Directory.CreateDirectory(Path.GetDirectoryName(path + NameResolver.GetHashFromULong(files[i].name) + ".gani"));
+                File.WriteAllBytes(path + NameResolver.GetHashFromULong(files[i].name) + ".gani", files[i].ReadData(output));
             } //for ends
-        } //method ListFiles ends
+        } //method Export ends
     } //class MtarEntry ends
 }

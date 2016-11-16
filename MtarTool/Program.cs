@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using MtarTool.Core.Mtar;
+using MtarTool.Core.Utility;
 
 namespace MtarTool
 {
@@ -8,14 +9,21 @@ namespace MtarTool
     {
         static void Main(string[] args)
         {
-            using (FileStream input = new FileStream(@"C:\Program Files (x86)\Steam\steamapps\common\MGS_TPP\master\chunk0_dat\Assets\tpp\pack\player\motion\player2_facial_snake_fpk\Assets\tpp\motion\mtar\player2\TppPlayer2Facial.mtar", FileMode.Open))
+            if(args[0] != null)
             {
-                MtarFile mtarFile = new MtarFile();
+                string file = args[0];
 
-                mtarFile.Read(input);
-                mtarFile.ListFiles();
-            } //using ends
+                using (FileStream input = new FileStream(file, FileMode.Open))
+                {
+                    MtarFile mtarFile = new MtarFile();
+
+                    mtarFile.Read(input);
+                    mtarFile.Export(input, file.Replace(".", "_") + @"\");
+                } //using ends
+            } //if ends
         } //function Main ends
+
+        
 
         static string getFileName(byte[] arr)
         {

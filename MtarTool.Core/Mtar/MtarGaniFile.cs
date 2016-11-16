@@ -1,11 +1,12 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Text;
 
 namespace MtarTool.Core.Mtar
 {
     class MtarGaniFile
     {
-        public byte[] name;
+        public ulong name;
         uint offset;
         int size;
 
@@ -13,7 +14,7 @@ namespace MtarTool.Core.Mtar
         {
             BinaryReader reader = new BinaryReader(input, Encoding.Default, true);
 
-            name = reader.ReadBytes(8);
+            name = reader.ReadUInt64();
             offset = reader.ReadUInt32();
             size = reader.ReadInt32();
         } //method Read ends
