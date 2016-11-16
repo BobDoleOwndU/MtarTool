@@ -37,7 +37,7 @@ namespace MtarTool.Core.Mtar
         {
             for(int i = 0; i < files.Count; i++)
             {
-                Directory.CreateDirectory(Path.GetDirectoryName(path + NameResolver.GetHashFromULong(files[i].name) + ".gani"));
+                Directory.CreateDirectory(Path.GetDirectoryName(path + NameResolver.TryFindName(NameResolver.GetHashFromULong(files[i].name)) + ".gani"));
                 File.WriteAllBytes(path + NameResolver.GetHashFromULong(files[i].name) + ".gani", files[i].ReadData(output));
             } //for ends
         } //method Export ends

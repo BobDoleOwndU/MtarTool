@@ -9,7 +9,7 @@ namespace MtarTool
     {
         static void Main(string[] args)
         {
-            if(args[0] != null)
+            if(args.Length != 0)
             {
                 string file = args[0];
 

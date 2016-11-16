@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -8,6 +10,9 @@ namespace MtarTool.Core.Utility
 {
     public static class NameResolver
     {
+        static string[] dictionary = File.ReadAllLines(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\mtar_dictionary.txt");
+        static string[] hashDictionary = HashDictionary(dictionary);
+
         public static string GetExtension(ulong hash)
         {
             ulong hashExtension = hash >> 51;
@@ -63,6 +68,32 @@ namespace MtarTool.Core.Utility
 
              return GetStrCode32(text).ToString("x");
         } //method getNameHash ends
+
+        public static string[] HashDictionary(string[] dictionary)
+        {
+            for(int i = 0; i < dictionary.Length; i++)
+            {
+                dictionary[i] = GetHashFromString(dictionary[i]);
+            } //for ends
+
+            return dictionary;
+        } //method HashDictionary ends
+
+        public static string TryFindName(string text)
+        {
+            for(int i = 0; i < hashDictionary.Length; i++)
+            {
+
+                if (text == hashDictionary[i])
+                {
+                    Console.WriteLine(hashDictionary[i]);
+                    return dictionary[i];
+                } //if ends
+            } //for ends
+
+            Console.WriteLine(text);
+            return text;
+        } //method TryFindName ends
 
         private static ulong GetStrCode32(string text)
         {
