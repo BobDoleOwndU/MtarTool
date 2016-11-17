@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MtarTool.Core.Utility
 {
@@ -69,16 +65,6 @@ namespace MtarTool.Core.Utility
              return GetStrCode32(text).ToString("x");
         } //method getNameHash ends
 
-        public static string[] HashDictionary(string[] dictionary)
-        {
-            for(int i = 0; i < dictionary.Length; i++)
-            {
-                dictionary[i] = GetHashFromString(dictionary[i]);
-            } //for ends
-
-            return dictionary;
-        } //method HashDictionary ends
-
         public static string TryFindName(string text)
         {
             for(int i = 0; i < hashDictionary.Length; i++)
@@ -107,5 +93,15 @@ namespace MtarTool.Core.Utility
             ulong maskedHash = CityHash.CityHash.CityHash64WithSeeds(text, seed0, seed1) & 0x3FFFFFFFFFFFF;
             return maskedHash;
         } //method GetStrCode32 ends
+
+        private static string[] HashDictionary(string[] dictionary)
+        {
+            for (int i = 0; i < dictionary.Length; i++)
+            {
+                dictionary[i] = GetHashFromString(dictionary[i]);
+            } //for ends
+
+            return dictionary;
+        } //method HashDictionary ends
     } //class NameResolver ends
 }

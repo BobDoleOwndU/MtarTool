@@ -1,20 +1,32 @@
-﻿using System;
+﻿using MtarTool.Core.Utility;
+using System;
 using System.IO;
 using System.Text;
+using System.Xml.Serialization;
 
 namespace MtarTool.Core.Mtar
 {
-    class MtarGaniFile
+    [XmlType("Entry", Namespace = "Mtar")]
+    public class MtarGaniFile
     {
-        public ulong name;
-        uint offset;
-        int size;
+        [XmlIgnore]
+        public ulong hash;
+
+        [XmlAttribute("FilePath")]
+        public string name;
+
+        [XmlIgnore]
+        public uint offset;
+
+        [XmlIgnore]
+        public int size;
 
         public void Read(Stream input)
         {
             BinaryReader reader = new BinaryReader(input, Encoding.Default, true);
 
-            name = reader.ReadUInt64();
+            hash = reader.ReadUInt64();
+            name = NameResolver.TryFindName(NameResolver.GetHashFromULong(hash)) + ".gani";
             offset = reader.ReadUInt32();
             size = reader.ReadInt32();
         } //method Read ends

@@ -1,19 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using MtarTool.Core.Utility;
+using System.Xml.Serialization;
 
 namespace MtarTool.Core.Mtar
 {
+    [XmlType("MtarFile")]
     public class MtarFile
     {
-        uint signature;
-        uint fileCount;
-        uint unknown1;
-        uint unknown2;
+        [XmlAttribute("Name")]
+        public string name;
 
-        List<MtarGaniFile> files = new List<MtarGaniFile>();
+        [XmlAttribute("Signature")]
+        public uint signature;
+
+        [XmlIgnore]
+        public uint fileCount;
+
+        [XmlAttribute("Unknown1")]
+        public uint unknown1;
+
+        [XmlAttribute("Unknown2")]
+        public uint unknown2;
+
+        [XmlArray("Entries")]
+        public List<MtarGaniFile> files = new List<MtarGaniFile>();
 
         public void Read(Stream input)
         {
@@ -37,8 +48,8 @@ namespace MtarTool.Core.Mtar
         {
             for(int i = 0; i < files.Count; i++)
             {
-                Directory.CreateDirectory(Path.GetDirectoryName(path + NameResolver.TryFindName(NameResolver.GetHashFromULong(files[i].name)) + ".gani"));
-                File.WriteAllBytes(path + NameResolver.GetHashFromULong(files[i].name) + ".gani", files[i].ReadData(output));
+                Directory.CreateDirectory(Path.GetDirectoryName(path + files[i].name));
+                File.WriteAllBytes(path + files[i].name, files[i].ReadData(output));
             } //for ends
         } //method Export ends
     } //class MtarEntry ends
