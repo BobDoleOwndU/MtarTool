@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Xml.Serialization;
@@ -52,5 +53,39 @@ namespace MtarTool.Core.Mtar
                 File.WriteAllBytes(path + files[i].name, files[i].ReadData(output));
             } //for ends
         } //method Export ends
+
+        public void Import(Stream output, string path)
+        {
+            string inputPath = Path.GetFileNameWithoutExtension(path);
+
+            Console.WriteLine(inputPath);
+            uint offset = (uint)output.Position;
+            BinaryWriter writer = new BinaryWriter(output, Encoding.Default, true);
+
+            fileCount = (uint)files.Count;
+
+            writer.Write(signature);
+            writer.Write(fileCount);
+            writer.Write(unknown1);
+            writer.Write(unknown2);
+            writer.WriteZeros(16);
+
+            for(int i = 0; i < files.Count; i++)
+            {
+                files[i].Write(output);
+            } //for ends
+
+            for(int i = 0; i < files.Count; i++)
+            {
+                byte[] file = File.ReadAllBytes(inputPath + @"_mtar\" + files[i].name);
+                offset = (uint)writer.BaseStream.Position;
+                writer.BaseStream.Position = (0x20 + ((0x10 * i) + 0x8));
+                writer.Write(offset);
+                writer.Write(file.Length);
+                writer.BaseStream.Position = offset;
+                writer.Write(file);
+                output.AlignWrite(16, 0x00);
+            } //for ends
+        } //method Import ends
     } //class MtarEntry ends
 }

@@ -31,6 +31,16 @@ namespace MtarTool.Core.Mtar
             size = reader.ReadInt32();
         } //method Read ends
 
+        public void Write(Stream output)
+        {
+            BinaryWriter writer = new BinaryWriter(output, Encoding.Default, true);
+
+            hash = NameResolver.GetHashFromName(name);
+
+            writer.Write(hash);
+            writer.WriteZeros(8);
+        } //method Read ends
+
         public byte[] ReadData(Stream input)
         {
             input.Position = offset;

@@ -1,7 +1,5 @@
-﻿using System;
+﻿using MtarTool.Core.Mtar;
 using System.IO;
-using MtarTool.Core.Mtar;
-using MtarTool.Core.Utility;
 using System.Xml.Serialization;
 
 namespace MtarTool
@@ -16,7 +14,14 @@ namespace MtarTool
             {
                 string path = args[0];
 
-                ReadArchive(path);
+                if(Path.GetExtension(path) == ".mtar")
+                {
+                    ReadArchive(path);
+                } //if ends
+                else if(Path.GetExtension(path) == ".xml")
+                {
+                    WriteArchive(path);
+                } //else if ends
             } //if ends
         } //method Main ends
 
@@ -35,6 +40,19 @@ namespace MtarTool
                 mtarFile.Export(input, outputPath);
 
                 xmlSerializer.Serialize(xmlOutput, mtarFile);
+            } //using ends
+        } //method ReadArchive ends
+
+        static void WriteArchive(string path)
+        {
+            string outputPath = path.Replace(".xml", "");
+
+            using (FileStream xmlInput = new FileStream(path, FileMode.Open))
+            using (FileStream output = new FileStream(outputPath, FileMode.Create))
+            {
+                MtarFile mtarFile = xmlSerializer.Deserialize(xmlInput) as MtarFile;
+
+                mtarFile.Import(output, outputPath);
             } //using ends
         } //method WriteArchive ends
     } //class Program ends

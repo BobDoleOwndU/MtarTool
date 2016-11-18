@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MtarTool.Core
 {
@@ -27,5 +23,15 @@ namespace MtarTool.Core
             byte[] zeros = new byte[count];
             writer.Write(zeros);
         } //method WriteZeros ends
+
+        internal static void AlignWrite(this Stream output, int alignment, byte data)
+        {
+            long alignmentRequired = output.Position % alignment;
+            if (alignmentRequired > 0)
+            {
+                byte[] alignmentBytes = Enumerable.Repeat(data, (int)(alignment - alignmentRequired)).ToArray();
+                output.Write(alignmentBytes, 0, alignmentBytes.Length);
+            }
+        } //method AlignWrite ends
     } //class ExtensionMethods ends
 }

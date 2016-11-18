@@ -40,7 +40,7 @@ namespace MtarTool.Core.Utility
                     break;
             } //switch ends
 
-            if (hash.Substring(4)[0] == '0')
+            if (hash.Substring(3)[0] == '0' && hash.Substring(4)[0] == '0')
             {
                 return hash.Substring(5);
             } //if ends
@@ -80,6 +80,37 @@ namespace MtarTool.Core.Utility
             Console.WriteLine(text);
             return text;
         } //method TryFindName ends
+
+        public static ulong GetHashFromName(string text)
+        {
+            string outputText = "";
+            ulong outputULong = 0x0;
+
+            text = text.Replace(".gani", "");
+
+            while (text.Length < 13)
+            {
+                text = "0" + text;
+            } //while ends
+
+            switch(text[0])
+            {
+                case '0': outputText = "FC50" + text.Substring(1);
+                    break;
+                case '1': outputText = "FC51" + text.Substring(1);
+                    break;
+                case '2': outputText = "FC52" + text.Substring(1);
+                    break;
+                case '3': outputText = "FC53" + text.Substring(1);
+                    break;
+            } //switch ends
+
+            outputULong = Convert.ToUInt64(outputText, 16);
+
+            Console.WriteLine(outputText);
+
+            return outputULong;
+        } //method GetHashFromName ends
 
         private static ulong GetStrCode32(string text)
         {
