@@ -9,6 +9,8 @@ namespace MtarTool.Core.Utility
         static string[] dictionary = File.ReadAllLines(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\mtar_dictionary.txt");
         static string[] hashDictionary = HashDictionary(dictionary);
 
+        const string ASSETS_CONST = "/Assets/";
+
         public static string GetExtension(ulong hash)
         {
             ulong hashExtension = hash >> 51;
@@ -50,7 +52,6 @@ namespace MtarTool.Core.Utility
 
         public static string GetHashFromString(string text)
         {
-            const string ASSETS_CONST = "/Assets/";
             string toHash = "";
 
             if(text.Contains(ASSETS_CONST))
@@ -83,6 +84,11 @@ namespace MtarTool.Core.Utility
 
         public static ulong GetHashFromName(string text)
         {
+            if (text.Contains(ASSETS_CONST))
+            {
+                text = GetHashFromString(text);
+            } //if ends
+
             string outputText = "";
             ulong outputULong = 0x0;
 
