@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MtarTool.Core.Common;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -7,11 +8,8 @@ using System.Xml.Serialization;
 namespace MtarTool.Core.Mtar
 {
     [XmlType("MtarFile")]
-    public class MtarFile
+    public class MtarFile : ArchiveFile
     {
-        [XmlAttribute("Name")]
-        public string name;
-
         [XmlAttribute("Signature")]
         public uint signature;
 
@@ -27,7 +25,7 @@ namespace MtarTool.Core.Mtar
         [XmlArray("Entries")]
         public List<MtarGaniFile> files = new List<MtarGaniFile>();
 
-        public void Read(Stream input)
+        public override void Read(Stream input)
         {
             BinaryReader reader = new BinaryReader(input, Encoding.Default, true);
 
@@ -45,7 +43,7 @@ namespace MtarTool.Core.Mtar
             } //for ends
         } //method Read ends
 
-        public void Export(Stream output, string path)
+        public override void Export(Stream output, string path)
         {
             for(int i = 0; i < files.Count; i++)
             {
@@ -54,7 +52,7 @@ namespace MtarTool.Core.Mtar
             } //for ends
         } //method Export ends
 
-        public void Import(Stream output, string path)
+        public override void Import(Stream output, string path)
         {
             string inputPath = Path.GetFileNameWithoutExtension(path);
 

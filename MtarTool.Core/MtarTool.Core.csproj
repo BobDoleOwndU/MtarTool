@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\ArchiveFile.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="Mtar\MtarFile.cs" />
     <Compile Include="Mtar\MtarGaniFile.cs" />

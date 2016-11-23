@@ -1,4 +1,5 @@
-﻿using MtarTool.Core.Mtar;
+﻿using MtarTool.Core.Common;
+using MtarTool.Core.Mtar;
 using System.IO;
 using System.Xml.Serialization;
 
@@ -6,7 +7,7 @@ namespace MtarTool
 {
     class Program
     {
-        private static XmlSerializer xmlSerializer = new XmlSerializer(typeof(MtarFile));
+        private static XmlSerializer xmlSerializer = new XmlSerializer(typeof(ArchiveFile), new[] { typeof(MtarFile) });
 
         static void Main(string[] args)
         {
@@ -16,7 +17,7 @@ namespace MtarTool
 
                 if(Path.GetExtension(path) == ".mtar")
                 {
-                    ReadArchive(path);
+                    ReadArchive<MtarFile>(path);
                 } //if ends
                 else if(Path.GetExtension(path) == ".xml")
                 {
@@ -25,7 +26,7 @@ namespace MtarTool
             } //if ends
         } //method Main ends
 
-        static void ReadArchive(string path)
+        static void ReadArchive<T>(string path) where T : ArchiveFile, new()
         {
             string outputPath = path.Replace(".", "_") + @"\";
             string xmlOutputPath = path + ".xml";
@@ -33,13 +34,13 @@ namespace MtarTool
             using (FileStream input = new FileStream(path, FileMode.Open))
             using (FileStream xmlOutput = new FileStream(xmlOutputPath, FileMode.Create))
             {
-                MtarFile mtarFile = new MtarFile();
+                T file = new T();
 
-                mtarFile.name = Path.GetFileName(path);
-                mtarFile.Read(input);
-                mtarFile.Export(input, outputPath);
+                file.name = Path.GetFileName(path);
+                file.Read(input);
+                file.Export(input, outputPath);
 
-                xmlSerializer.Serialize(xmlOutput, mtarFile);
+                xmlSerializer.Serialize(xmlOutput, file);
             } //using ends
         } //method ReadArchive ends
 
@@ -50,9 +51,9 @@ namespace MtarTool
             using (FileStream xmlInput = new FileStream(path, FileMode.Open))
             using (FileStream output = new FileStream(outputPath, FileMode.Create))
             {
-                MtarFile mtarFile = xmlSerializer.Deserialize(xmlInput) as MtarFile;
+                ArchiveFile archiveFile = xmlSerializer.Deserialize(xmlInput) as ArchiveFile;
 
-                mtarFile.Import(output, outputPath);
+                archiveFile.Import(output, outputPath);
             } //using ends
         } //method WriteArchive ends
     } //class Program ends
