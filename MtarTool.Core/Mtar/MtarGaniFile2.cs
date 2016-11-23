@@ -6,7 +6,7 @@ using System.Xml.Serialization;
 namespace MtarTool.Core.Mtar
 {
     [XmlType("Entry", Namespace = "Mtar")]
-    public class MtarGaniFile
+    public class MtarGaniFile2
     {
         [XmlIgnore]
         public ulong hash;
@@ -20,6 +20,15 @@ namespace MtarTool.Core.Mtar
         [XmlIgnore]
         public int size;
 
+        [XmlIgnore]
+        public int size2;
+
+        [XmlIgnore]
+        public int exChunkSize;
+
+        [XmlIgnore]
+        public uint endChunkOffset;
+
         public void Read(Stream input)
         {
             BinaryReader reader = new BinaryReader(input, Encoding.Default, true);
@@ -27,7 +36,18 @@ namespace MtarTool.Core.Mtar
             hash = reader.ReadUInt64();
             name = NameResolver.TryFindName(NameResolver.GetHashFromULong(hash)) + ".gani";
             offset = reader.ReadUInt32();
-            size = reader.ReadInt32();
+            size = reader.ReadInt16();
+            size2 = reader.ReadInt16();
+
+            if(size == size2)
+            {
+                size *= 0x10;
+            } //if ends
+
+            exChunkSize = reader.ReadInt16() * 0x10;
+            reader.Skip(6);
+            endChunkOffset = reader.ReadUInt32();
+            reader.Skip(4);
         } //method Read ends
 
         public void Write(Stream output)
@@ -48,5 +68,5 @@ namespace MtarTool.Core.Mtar
 
             return data;
         } //method ReadData ends
-    } //class MtarGaniFile ends
+    } //class MtarGaniFile2 ends
 }

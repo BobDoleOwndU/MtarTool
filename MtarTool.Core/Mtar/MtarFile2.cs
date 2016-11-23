@@ -7,8 +7,8 @@ using System.Xml.Serialization;
 
 namespace MtarTool.Core.Mtar
 {
-    [XmlType("MtarFile")]
-    public class MtarFile : ArchiveFile
+    [XmlType("MtarFile2")]
+    public class MtarFile2 : ArchiveFile
     {
         [XmlAttribute("Signature")]
         public uint signature;
@@ -19,8 +19,13 @@ namespace MtarTool.Core.Mtar
         [XmlAttribute("BoneGroups")]
         public ulong boneGroups;
 
+        [XmlAttribute("BoneGroups2")]
+        public uint boneGroups2;
+
+        public uint trackOffset;
+
         [XmlArray("Entries")]
-        public List<MtarGaniFile> files = new List<MtarGaniFile>();
+        public List<MtarGaniFile2> files = new List<MtarGaniFile2>();
 
         public override void Read(Stream input)
         {
@@ -29,19 +34,21 @@ namespace MtarTool.Core.Mtar
             signature = reader.ReadUInt32();
             fileCount = reader.ReadUInt32();
             boneGroups = reader.ReadUInt64();
-            reader.Skip(16);
+            boneGroups2 = reader.ReadUInt32();
+            trackOffset = reader.ReadUInt32();
+            reader.Skip(8);
 
-            for(int i = 0; i < fileCount; i++)
+            for (int i = 0; i < fileCount; i++)
             {
-                MtarGaniFile mtarGaniFile = new MtarGaniFile();
-                mtarGaniFile.Read(input);
-                files.Add(mtarGaniFile);
+                MtarGaniFile2 mtarGaniFile2 = new MtarGaniFile2();
+                mtarGaniFile2.Read(input);
+                files.Add(mtarGaniFile2);
             } //for ends
         } //method Read ends
 
         public override void Export(Stream output, string path)
         {
-            for(int i = 0; i < files.Count; i++)
+            for (int i = 0; i < files.Count; i++)
             {
                 Directory.CreateDirectory(Path.GetDirectoryName(path + files[i].name));
                 File.WriteAllBytes(path + files[i].name, files[i].ReadData(output));
@@ -61,14 +68,15 @@ namespace MtarTool.Core.Mtar
             writer.Write(signature);
             writer.Write(fileCount);
             writer.Write(boneGroups);
+            writer.Write(boneGroups2);
             writer.WriteZeros(16);
 
-            for(int i = 0; i < files.Count; i++)
+            for (int i = 0; i < files.Count; i++)
             {
                 files[i].Write(output);
             } //for ends
 
-            for(int i = 0; i < files.Count; i++)
+            for (int i = 0; i < files.Count; i++)
             {
                 byte[] file = File.ReadAllBytes(inputPath + @"_mtar\" + files[i].name);
                 offset = (uint)writer.BaseStream.Position;
@@ -80,5 +88,5 @@ namespace MtarTool.Core.Mtar
                 output.AlignWrite(16, 0x00);
             } //for ends
         } //method Import ends
-    } //class MtarEntry ends
+    } //class MtarFile2 ends
 }

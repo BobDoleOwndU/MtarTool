@@ -46,7 +46,9 @@
     <Compile Include="Common\ArchiveFile.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="Mtar\MtarFile.cs" />
+    <Compile Include="Mtar\MtarFile2.cs" />
     <Compile Include="Mtar\MtarGaniFile.cs" />
+    <Compile Include="Mtar\MtarGaniFile2.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utility\NameResolver.cs" />
   </ItemGroup>
