@@ -48,6 +48,7 @@ namespace MtarTool.Core.Mtar
             reader.Skip(6);
             endChunkOffset = reader.ReadUInt32();
             reader.Skip(4);
+            //Continue from here
         } //method Read ends
 
         public void Write(Stream output)

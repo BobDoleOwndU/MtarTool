@@ -22,10 +22,14 @@ namespace MtarTool.Core.Mtar
         [XmlAttribute("BoneGroups2")]
         public uint boneGroups2;
 
+        [XmlIgnore]
         public uint trackOffset;
 
         [XmlArray("Entries")]
         public List<MtarGaniFile2> files = new List<MtarGaniFile2>();
+
+        [XmlArrayItem("Entries")]
+        public MtarTrack2 mtarTrack;
 
         public override void Read(Stream input)
         {
@@ -36,6 +40,9 @@ namespace MtarTool.Core.Mtar
             boneGroups = reader.ReadUInt64();
             boneGroups2 = reader.ReadUInt32();
             trackOffset = reader.ReadUInt32();
+
+            mtarTrack = new MtarTrack2(trackOffset);
+
             reader.Skip(8);
 
             for (int i = 0; i < fileCount; i++)
@@ -44,6 +51,8 @@ namespace MtarTool.Core.Mtar
                 mtarGaniFile2.Read(input);
                 files.Add(mtarGaniFile2);
             } //for ends
+
+
         } //method Read ends
 
         public override void Export(Stream output, string path)
