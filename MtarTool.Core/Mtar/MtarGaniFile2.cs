@@ -5,7 +5,7 @@ using System.Xml.Serialization;
 
 namespace MtarTool.Core.Mtar
 {
-    [XmlType("Entry", Namespace = "Mtar")]
+    [XmlType("Gani", Namespace = "Mtar")]
     public class MtarGaniFile2
     {
         [XmlIgnore]

@@ -28,11 +28,11 @@ namespace MtarTool.Core.Mtar
         [XmlArray("Entries")]
         public List<MtarGaniFile2> files = new List<MtarGaniFile2>();
 
-        [XmlArrayItem("Entries")]
-        public MtarTrack2 mtarTrack;
+        [XmlElement]
+        public MtarTrack2 mtarTrack = new MtarTrack2();
 
-        [XmlArrayItem("Entries")]
-        public MtarChunk2 mtarChunk;
+        [XmlElement]
+        public MtarChunk2 mtarChunk = new MtarChunk2();
 
         public override void Read(Stream input)
         {
@@ -44,7 +44,7 @@ namespace MtarTool.Core.Mtar
             boneGroups2 = reader.ReadUInt32();
             trackOffset = reader.ReadUInt32();
 
-            mtarTrack = new MtarTrack2(trackOffset);
+            mtarTrack.offset = trackOffset;
 
             reader.Skip(8);
 
@@ -57,15 +57,18 @@ namespace MtarTool.Core.Mtar
 
             mtarTrack.Read(input);
             input.Position = mtarTrack.offset + mtarTrack.size;
-            mtarChunk = new MtarChunk2((uint)input.Position);
+            mtarChunk.offset = (uint)input.Position;
             mtarChunk.GetSize(input);
         } //method Read ends
 
         public override void Export(Stream output, string path)
         {
+            mtarTrack.name = "track.trk";
+            mtarChunk.name = "chunk.chnk";
+
             Directory.CreateDirectory(Path.GetDirectoryName(path + "1.trk"));
-            File.WriteAllBytes(path + "1.trk", mtarTrack.ReadData(output));
-            File.WriteAllBytes(path + "1.chnk", mtarChunk.ReadData(output));
+            File.WriteAllBytes(path + mtarTrack.name, mtarTrack.ReadData(output));
+            File.WriteAllBytes(path + mtarChunk.name, mtarChunk.ReadData(output));
 
             /*for (int i = 0; i < files.Count; i++)
             {

@@ -7,7 +7,7 @@ namespace MtarTool
 {
     class Program
     {
-        //private static XmlSerializer xmlSerializer = new XmlSerializer(typeof(ArchiveFile), new[] { typeof(MtarFile), typeof(MtarFile2) });
+        private static XmlSerializer xmlSerializer = new XmlSerializer(typeof(ArchiveFile), new[] { typeof(MtarFile), typeof(MtarFile2) });
 
         static void Main(string[] args)
         {
@@ -32,7 +32,7 @@ namespace MtarTool
             string xmlOutputPath = path + ".xml";
 
             using (FileStream input = new FileStream(path, FileMode.Open))
-            //using (FileStream xmlOutput = new FileStream(xmlOutputPath, FileMode.Create))
+            using (FileStream xmlOutput = new FileStream(xmlOutputPath, FileMode.Create))
             {
                 T file = new T();
 
@@ -40,7 +40,7 @@ namespace MtarTool
                 file.Read(input);
                 file.Export(input, outputPath);
 
-                //xmlSerializer.Serialize(xmlOutput, file);
+                xmlSerializer.Serialize(xmlOutput, file);
             } //using ends
         } //method ReadArchive ends
 

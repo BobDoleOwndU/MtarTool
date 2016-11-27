@@ -5,7 +5,7 @@ using System.Xml.Serialization;
 
 namespace MtarTool.Core.Mtar
 {
-    [XmlType("Entry", Namespace = "Mtar")]
+    [XmlType("Chunk", Namespace = "Mtar")]
     public class MtarChunk2
     {
         [XmlAttribute("FilePath")]
@@ -22,11 +22,6 @@ namespace MtarTool.Core.Mtar
 
         [XmlIgnore]
         public int size;
-
-        public MtarChunk2(uint offset)
-        {
-            this.offset = offset;
-        } //constructor ends
 
         public byte[] ReadData(Stream input)
         {

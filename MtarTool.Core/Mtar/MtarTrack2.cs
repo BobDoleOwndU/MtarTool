@@ -4,7 +4,7 @@ using System.Xml.Serialization;
 
 namespace MtarTool.Core.Mtar
 {
-    [XmlType("Entry", Namespace = "Mtar")]
+    [XmlType("Track", Namespace = "Mtar")]
     public class MtarTrack2
     {
         [XmlAttribute("FilePath")]
@@ -21,11 +21,6 @@ namespace MtarTool.Core.Mtar
 
         [XmlIgnore]
         public int size;
-
-        public MtarTrack2(uint offset)
-        {
-            this.offset = offset;
-        } //constructor ends
 
         public void Read(Stream input)
         {
