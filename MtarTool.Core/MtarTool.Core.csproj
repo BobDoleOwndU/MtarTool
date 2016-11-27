@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="Common\ArchiveFile.cs" />
     <Compile Include="ExtensionMethods.cs" />
+    <Compile Include="Mtar\MtarChunk2.cs" />
     <Compile Include="Mtar\MtarFile.cs" />
     <Compile Include="Mtar\MtarFile2.cs" />
     <Compile Include="Mtar\MtarGaniFile.cs" />

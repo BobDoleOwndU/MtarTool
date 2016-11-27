@@ -31,6 +31,9 @@ namespace MtarTool.Core.Mtar
         [XmlArrayItem("Entries")]
         public MtarTrack2 mtarTrack;
 
+        [XmlArrayItem("Entries")]
+        public MtarChunk2 mtarChunk;
+
         public override void Read(Stream input)
         {
             BinaryReader reader = new BinaryReader(input, Encoding.Default, true);
@@ -52,7 +55,11 @@ namespace MtarTool.Core.Mtar
                 files.Add(mtarGaniFile2);
             } //for ends
 
-
+            mtarTrack.Read(input);
+            input.Position = mtarTrack.offset + mtarTrack.size;
+            mtarChunk = new MtarChunk2((uint)input.Position);
+            mtarChunk.GetSize(input);
+            input.Position = mtarChunk.offset + mtarChunk.size;
         } //method Read ends
 
         public override void Export(Stream output, string path)
