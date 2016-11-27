@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Text;
 using System.Xml.Serialization;
 
@@ -36,7 +37,7 @@ namespace MtarTool.Core.Mtar
             return data;
         } //method ReadData ends
 
-        public int GetSize(Stream input)
+        public void GetSize(Stream input)
         {
             uint lineValue = 0x0;
             bool run = true;
@@ -58,7 +59,9 @@ namespace MtarTool.Core.Mtar
                 } //else ends
             } //while ends
 
-            return (int)((input.Position - 0x4) - offset);
+            Console.WriteLine();
+
+            size = (int)((input.Position - 0x4) - offset);
         } //function GetLength ends
     } //class MtarChunk2 ends
 }

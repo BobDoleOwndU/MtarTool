@@ -59,16 +59,19 @@ namespace MtarTool.Core.Mtar
             input.Position = mtarTrack.offset + mtarTrack.size;
             mtarChunk = new MtarChunk2((uint)input.Position);
             mtarChunk.GetSize(input);
-            input.Position = mtarChunk.offset + mtarChunk.size;
         } //method Read ends
 
         public override void Export(Stream output, string path)
         {
-            for (int i = 0; i < files.Count; i++)
+            Directory.CreateDirectory(Path.GetDirectoryName(path + "1.trk"));
+            File.WriteAllBytes(path + "1.trk", mtarTrack.ReadData(output));
+            File.WriteAllBytes(path + "1.chnk", mtarChunk.ReadData(output));
+
+            /*for (int i = 0; i < files.Count; i++)
             {
                 Directory.CreateDirectory(Path.GetDirectoryName(path + files[i].name));
                 File.WriteAllBytes(path + files[i].name, files[i].ReadData(output));
-            } //for ends
+            } //for ends*/
         } //method Export ends
 
         public override void Import(Stream output, string path)

@@ -7,7 +7,7 @@ namespace MtarTool
 {
     class Program
     {
-        private static XmlSerializer xmlSerializer = new XmlSerializer(typeof(ArchiveFile), new[] { typeof(MtarFile) });
+        //private static XmlSerializer xmlSerializer = new XmlSerializer(typeof(ArchiveFile), new[] { typeof(MtarFile), typeof(MtarFile2) });
 
         static void Main(string[] args)
         {
@@ -17,7 +17,7 @@ namespace MtarTool
 
                 if(Path.GetExtension(path) == ".mtar")
                 {
-                    ReadArchive<MtarFile>(path);
+                    ReadArchive<MtarFile2>(path);
                 } //if ends
                 else if(Path.GetExtension(path) == ".xml")
                 {
@@ -32,7 +32,7 @@ namespace MtarTool
             string xmlOutputPath = path + ".xml";
 
             using (FileStream input = new FileStream(path, FileMode.Open))
-            using (FileStream xmlOutput = new FileStream(xmlOutputPath, FileMode.Create))
+            //using (FileStream xmlOutput = new FileStream(xmlOutputPath, FileMode.Create))
             {
                 T file = new T();
 
@@ -40,13 +40,13 @@ namespace MtarTool
                 file.Read(input);
                 file.Export(input, outputPath);
 
-                xmlSerializer.Serialize(xmlOutput, file);
+                //xmlSerializer.Serialize(xmlOutput, file);
             } //using ends
         } //method ReadArchive ends
 
         static void WriteArchive(string path)
         {
-            string outputPath = path.Replace(".xml", "");
+            /*string outputPath = path.Replace(".xml", "");
 
             using (FileStream xmlInput = new FileStream(path, FileMode.Open))
             using (FileStream output = new FileStream(outputPath, FileMode.Create))
@@ -54,7 +54,7 @@ namespace MtarTool
                 ArchiveFile archiveFile = xmlSerializer.Deserialize(xmlInput) as ArchiveFile;
 
                 archiveFile.Import(output, outputPath);
-            } //using ends
+            } //using ends*/
         } //method WriteArchive ends
     } //class Program ends
 } //namespace MtarTool ends
