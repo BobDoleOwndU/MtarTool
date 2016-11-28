@@ -72,8 +72,8 @@ namespace MtarTool.Core.Mtar
 
             for (int i = 0; i < files.Count; i++)
             {
-                Directory.CreateDirectory(Path.GetDirectoryName(path + files[i].name));
-                File.WriteAllBytes(path + files[i].name, files[i].ReadData(output));
+                Directory.CreateDirectory(Path.GetDirectoryName(path + files[i].name + ".gani"));
+                File.WriteAllBytes(path + files[i].name + ".gani", files[i].ReadData(output));
 
                 if(files[i].exChunkSize != 0x0)
                 {
@@ -101,23 +101,63 @@ namespace MtarTool.Core.Mtar
             writer.Write(fileCount);
             writer.Write(boneGroups);
             writer.Write(boneGroups2);
-            writer.WriteZeros(16);
+            writer.WriteZeros(12);
 
             for (int i = 0; i < files.Count; i++)
             {
                 files[i].Write(output);
             } //for ends
 
+            offset = (uint)output.Position;
+            byte[] track = File.ReadAllBytes(inputPath + @"_mtar\track.trk");
+            output.Position = 0x14;
+            writer.Write(offset);
+            output.Position = offset;
+            writer.Write(track);
+            byte[] chunk = File.ReadAllBytes(inputPath + @"_mtar\chunk.chnk");
+            writer.Write(chunk);
+
             for (int i = 0; i < files.Count; i++)
             {
-                byte[] file = File.ReadAllBytes(inputPath + @"_mtar\" + files[i].name);
-                offset = (uint)writer.BaseStream.Position;
-                writer.BaseStream.Position = (0x20 + ((0x10 * i) + 0x8));
+                byte[] file = File.ReadAllBytes(inputPath + @"_mtar\" + files[i].name + ".gani");
+                byte[] exFile;
+                offset = (uint)output.Position;
+                output.Position = (0x20 + ((0x20 * i) + 0x8));
                 writer.Write(offset);
-                writer.Write(file.Length);
-                writer.BaseStream.Position = offset;
+                writer.Write((ushort)(file.Length / 0x10));
+
+                if(File.Exists(inputPath + @"_mtar\" + files[i].name + ".exchnk"))
+                {
+                    writer.Write((ushort)(file.Length / 0x10));
+                    exFile = File.ReadAllBytes(inputPath + @"_mtar\" + files[i].name + ".exchnk");
+                    writer.Write((ushort)(exFile.Length / 0x10));
+                } //if ends
+                else
+                {
+                    exFile = new byte[0];
+                } //else ends
+
+                output.Position = offset;
                 writer.Write(file);
-                output.AlignWrite(16, 0x00);
+                
+                if(exFile.Length > 0)
+                {
+                    writer.Write(exFile);
+                } //if ends
+            } //for ends
+
+            for (int i = 0; i < files.Count; i++)
+            {
+                if(File.Exists(inputPath + @"_mtar\" + files[i].name + ".enchnk"))
+                {
+                    byte[] file = File.ReadAllBytes(inputPath + @"_mtar\" + files[i].name + ".enchnk");
+
+                    offset = (uint)output.Position;
+                    output.Position = (0x30 + ((0x20 * i) + 0x8));
+                    writer.Write(offset);
+                    output.Position = offset;
+                    writer.Write(file);
+                } //if ends
             } //for ends
         } //method Import ends
     } //class MtarFile2 ends

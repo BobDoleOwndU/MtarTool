@@ -35,7 +35,7 @@ namespace MtarTool.Core.Mtar
             BinaryReader reader = new BinaryReader(input, Encoding.Default, true);
 
             hash = reader.ReadUInt64();
-            name = NameResolver.TryFindName(NameResolver.GetHashFromULong(hash)) + ".gani";
+            name = NameResolver.TryFindName(NameResolver.GetHashFromULong(hash));
             offset = reader.ReadUInt32();
             size = reader.ReadInt16();
             size2 = reader.ReadInt16();
@@ -53,7 +53,7 @@ namespace MtarTool.Core.Mtar
             hash = NameResolver.GetHashFromName(name);
 
             writer.Write(hash);
-            writer.WriteZeros(8);
+            writer.WriteZeros(24);
         } //method Read ends
 
         public byte[] ReadData(Stream input)
@@ -75,7 +75,6 @@ namespace MtarTool.Core.Mtar
 
         public byte[] ReadEndChunkData(Stream input)
         {
-            Console.WriteLine("Offset: " + endChunkOffset.ToString("x") + ", Size: " + GetEndChunkSize(input).ToString("x"));
             input.Position = endChunkOffset;
             int size = GetEndChunkSize(input);
             byte[] data = new byte[size];

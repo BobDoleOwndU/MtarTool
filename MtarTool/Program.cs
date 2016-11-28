@@ -2,6 +2,7 @@
 using MtarTool.Core.Mtar;
 using MtarTool.Core.Utility;
 using System.IO;
+using System.Text;
 using System.Xml.Serialization;
 
 namespace MtarTool
@@ -20,7 +21,14 @@ namespace MtarTool
 
                 if(Path.GetExtension(path) == ".mtar")
                 {
-                    ReadArchive<MtarFile2>(path);
+                    if(GetMtarType(path) == 1)
+                    {
+                        ReadArchive<MtarFile>(path);
+                    } //if ends
+                    else
+                    {
+                        ReadArchive<MtarFile2>(path);
+                    } //else ends
                 } //if ends
                 else if(Path.GetExtension(path) == ".xml")
                 {
@@ -28,6 +36,24 @@ namespace MtarTool
                 } //else if ends
             } //if ends
         } //method Main ends
+
+        static int GetMtarType(string path)
+        {
+            using (FileStream input = new FileStream(path, FileMode.Open))
+            {
+                BinaryReader reader = new BinaryReader(input, Encoding.Default, true);
+
+                input.Position = 0x10;
+                uint type = reader.ReadUInt32();
+
+                if(type > 0)
+                {
+                    return 2;
+                } //if ends
+
+                return 1;
+            } //using ends
+        } //method GetMtarType ends
 
         static void ReadArchive<T>(string path) where T : ArchiveFile, new()
         {
@@ -49,7 +75,7 @@ namespace MtarTool
 
         static void WriteArchive(string path)
         {
-            /*string outputPath = path.Replace(".xml", "");
+            string outputPath = path.Replace(".xml", "");
 
             using (FileStream xmlInput = new FileStream(path, FileMode.Open))
             using (FileStream output = new FileStream(outputPath, FileMode.Create))
@@ -57,7 +83,7 @@ namespace MtarTool
                 ArchiveFile archiveFile = xmlSerializer.Deserialize(xmlInput) as ArchiveFile;
 
                 archiveFile.Import(output, outputPath);
-            } //using ends*/
+            } //using ends
         } //method WriteArchive ends
     } //class Program ends
 } //namespace MtarTool ends
