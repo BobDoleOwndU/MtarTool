@@ -1,4 +1,5 @@
 ﻿using MtarTool.Core.Utility;
+using System;
 using System.IO;
 using System.Text;
 using System.Xml.Serialization;
@@ -39,10 +40,8 @@ namespace MtarTool.Core.Mtar
             size = reader.ReadInt16();
             size2 = reader.ReadInt16();
 
-            if(size == size2)
-            {
-                size *= 0x10;
-            } //if ends
+            size *= 0x10;
+            Console.WriteLine(size.ToString("x"));
 
             exChunkSize = reader.ReadInt16() * 0x10;
             reader.Skip(6);
@@ -68,5 +67,62 @@ namespace MtarTool.Core.Mtar
 
             return data;
         } //method ReadData ends
+
+        public byte[] ReadExChunkData(Stream input)
+        {
+            byte[] data = new byte[exChunkSize];
+            input.Read(data, 0, exChunkSize);
+
+            return data;
+        } //method ReadData ends
+
+        public byte[] ReadEndChunkData(Stream input)
+        {
+            Console.WriteLine("Offset: " + endChunkOffset.ToString("x") + ", Size: " + GetEndChunkSize(input).ToString("x"));
+            input.Position = endChunkOffset;
+            int size = GetEndChunkSize(input);
+            byte[] data = new byte[size];
+            input.Read(data, 0, size);
+            return data;
+        } //method ReadEndChunkData ends
+
+        private int GetEndChunkSize(Stream input)
+        {
+            BinaryReader reader = new BinaryReader(input, Encoding.Default, true);
+
+            int size = 0x0;
+            uint lineValue = 0x0;
+            bool run = true;
+
+            input.Position = endChunkOffset;
+            reader.Skip(16);
+
+            while (run)
+            {
+                if(input.Position != input.Length)
+                {
+                    lineValue = reader.ReadUInt32();
+                } //if ends
+                else
+                {
+                    size = (int)(input.Length - endChunkOffset);
+
+                    return size;
+                } //else ends
+
+                if (lineValue == 0x0BFE2CF6)
+                {
+                    run = false;
+                } //if ends
+                else
+                {
+                    reader.Skip(12);
+                } //else ends
+            } //while ends
+
+            size = (int)((input.Position - 0x4) - endChunkOffset);
+
+            return size;
+        } //method ReadEndChunkData ends
     } //class MtarGaniFile2 ends
 }

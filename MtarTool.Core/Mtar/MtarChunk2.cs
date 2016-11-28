@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Text;
 using System.Xml.Serialization;
 
@@ -53,8 +52,6 @@ namespace MtarTool.Core.Mtar
                     reader.Skip(12);
                 } //else ends
             } //while ends
-
-            Console.WriteLine();
 
             size = (int)((input.Position - 0x4) - offset);
         } //function GetLength ends

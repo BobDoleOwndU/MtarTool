@@ -70,11 +70,21 @@ namespace MtarTool.Core.Mtar
             File.WriteAllBytes(path + mtarTrack.name, mtarTrack.ReadData(output));
             File.WriteAllBytes(path + mtarChunk.name, mtarChunk.ReadData(output));
 
-            /*for (int i = 0; i < files.Count; i++)
+            for (int i = 0; i < files.Count; i++)
             {
                 Directory.CreateDirectory(Path.GetDirectoryName(path + files[i].name));
                 File.WriteAllBytes(path + files[i].name, files[i].ReadData(output));
-            } //for ends*/
+
+                if(files[i].exChunkSize != 0x0)
+                {
+                    File.WriteAllBytes(path + files[i].name + ".exchnk", files[i].ReadExChunkData(output));
+                } //if ends
+
+                if(files[i].endChunkOffset != 0x0)
+                {
+                    File.WriteAllBytes(path + files[i].name + ".enchnk", files[i].ReadEndChunkData(output));
+                } //if ends
+            } //for ends
         } //method Export ends
 
         public override void Import(Stream output, string path)
