@@ -11,6 +11,14 @@ namespace MtarTool.Core.Utility
 
         const string ASSETS_CONST = "/Assets/";
 
+        public static void Test()
+        {
+            for(int i = 0; i < dictionary.Length; i++)
+            {
+                Console.WriteLine(dictionary[i] + " = " + hashDictionary[i]);
+            } //for ends
+        } //
+
         public static string GetExtension(ulong hash)
         {
             ulong hashExtension = hash >> 51;
@@ -52,28 +60,23 @@ namespace MtarTool.Core.Utility
 
         public static string GetHashFromString(string text)
         {
-            string toHash = "";
+            string toHash = text;
 
             if(text.Contains(ASSETS_CONST))
             {
                 toHash = text.Substring(ASSETS_CONST.Length);
             } //if ends
-            else
-            {
-                toHash = text;
-            } //else ends
 
-             return GetStrCode32(text).ToString("x");
+             return GetStrCode32(toHash).ToString("x");
         } //method getNameHash ends
 
         public static string TryFindName(string text)
         {
             for(int i = 0; i < hashDictionary.Length; i++)
             {
-
                 if (text == hashDictionary[i])
                 {
-                    Console.WriteLine(hashDictionary[i]);
+                    Console.WriteLine(dictionary[i]);
                     return dictionary[i];
                 } //if ends
             } //for ends
@@ -133,12 +136,14 @@ namespace MtarTool.Core.Utility
 
         private static string[] HashDictionary(string[] dictionary)
         {
+            string[] hashDictionary = new string[dictionary.Length];
+
             for (int i = 0; i < dictionary.Length; i++)
             {
-                dictionary[i] = GetHashFromString(dictionary[i]);
+                hashDictionary[i] = GetHashFromString(dictionary[i]);
             } //for ends
 
-            return dictionary;
+            return hashDictionary;
         } //method HashDictionary ends
     } //class NameResolver ends
 }

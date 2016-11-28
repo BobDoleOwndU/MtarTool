@@ -39,10 +39,7 @@ namespace MtarTool.Core.Mtar
             offset = reader.ReadUInt32();
             size = reader.ReadInt16();
             size2 = reader.ReadInt16();
-
             size *= 0x10;
-            Console.WriteLine(size.ToString("x"));
-
             exChunkSize = reader.ReadInt16() * 0x10;
             reader.Skip(6);
             endChunkOffset = reader.ReadUInt32();

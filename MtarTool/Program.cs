@@ -1,5 +1,6 @@
 ﻿using MtarTool.Core.Common;
 using MtarTool.Core.Mtar;
+using MtarTool.Core.Utility;
 using System.IO;
 using System.Xml.Serialization;
 
@@ -11,6 +12,8 @@ namespace MtarTool
 
         static void Main(string[] args)
         {
+            NameResolver.Test();
+
             if(args.Length != 0)
             {
                 string path = args[0];
