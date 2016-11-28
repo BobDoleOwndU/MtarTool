@@ -63,12 +63,13 @@ namespace MtarTool.Core.Mtar
 
         public override void Export(Stream output, string path)
         {
-            mtarTrack.name = "track.trk";
-            mtarChunk.name = "chunk.chnk";
+            string fileName = Path.GetFileNameWithoutExtension(Path.GetDirectoryName(path).Replace("_mtar", ".mtar"));
+            mtarTrack.name = fileName;
+            mtarChunk.name = fileName;
 
             Directory.CreateDirectory(Path.GetDirectoryName(path + "1.trk"));
-            File.WriteAllBytes(path + mtarTrack.name, mtarTrack.ReadData(output));
-            File.WriteAllBytes(path + mtarChunk.name, mtarChunk.ReadData(output));
+            File.WriteAllBytes(path + mtarTrack.name + ".trk", mtarTrack.ReadData(output));
+            File.WriteAllBytes(path + mtarChunk.name + ".chnk", mtarChunk.ReadData(output));
 
             for (int i = 0; i < files.Count; i++)
             {
@@ -109,12 +110,12 @@ namespace MtarTool.Core.Mtar
             } //for ends
 
             offset = (uint)output.Position;
-            byte[] track = File.ReadAllBytes(inputPath + @"_mtar\track.trk");
+            byte[] track = File.ReadAllBytes(inputPath + @"_mtar\" + mtarTrack.name + ".trk");
             output.Position = 0x14;
             writer.Write(offset);
             output.Position = offset;
             writer.Write(track);
-            byte[] chunk = File.ReadAllBytes(inputPath + @"_mtar\chunk.chnk");
+            byte[] chunk = File.ReadAllBytes(inputPath + @"_mtar\" + mtarChunk.name + ".chnk");
             writer.Write(chunk);
 
             for (int i = 0; i < files.Count; i++)

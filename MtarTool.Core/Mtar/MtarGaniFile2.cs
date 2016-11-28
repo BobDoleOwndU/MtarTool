@@ -1,5 +1,4 @@
 ﻿using MtarTool.Core.Utility;
-using System;
 using System.IO;
 using System.Text;
 using System.Xml.Serialization;
@@ -75,8 +74,8 @@ namespace MtarTool.Core.Mtar
 
         public byte[] ReadEndChunkData(Stream input)
         {
-            input.Position = endChunkOffset;
             int size = GetEndChunkSize(input);
+            input.Position = endChunkOffset;
             byte[] data = new byte[size];
             input.Read(data, 0, size);
             return data;
@@ -89,7 +88,7 @@ namespace MtarTool.Core.Mtar
             int size = 0x0;
             uint lineValue = 0x0;
             bool run = true;
-
+            
             input.Position = endChunkOffset;
             reader.Skip(16);
 
@@ -106,7 +105,7 @@ namespace MtarTool.Core.Mtar
                     return size;
                 } //else ends
 
-                if (lineValue == 0x0BFE2CF6)
+                if (lineValue == 0xBFE2CF6)
                 {
                     run = false;
                 } //if ends

@@ -11,14 +11,6 @@ namespace MtarTool.Core.Utility
 
         const string ASSETS_CONST = "/Assets/";
 
-        public static void Test()
-        {
-            for(int i = 0; i < dictionary.Length; i++)
-            {
-                Console.WriteLine(dictionary[i] + " = " + hashDictionary[i]);
-            } //for ends
-        } //
-
         public static string GetExtension(ulong hash)
         {
             ulong hashExtension = hash >> 51;

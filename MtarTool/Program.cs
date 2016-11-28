@@ -1,6 +1,7 @@
 ﻿using MtarTool.Core.Common;
 using MtarTool.Core.Mtar;
 using MtarTool.Core.Utility;
+using System;
 using System.IO;
 using System.Text;
 using System.Xml.Serialization;
@@ -13,8 +14,6 @@ namespace MtarTool
 
         static void Main(string[] args)
         {
-            NameResolver.Test();
-
             if(args.Length != 0)
             {
                 string path = args[0];
@@ -57,7 +56,10 @@ namespace MtarTool
 
         static void ReadArchive<T>(string path) where T : ArchiveFile, new()
         {
-            string outputPath = path.Replace(".", "_") + @"\";
+            string directory = Path.GetDirectoryName(path);
+            string nameWithoutExtension = Path.GetFileNameWithoutExtension(path);
+            string extension = Path.GetExtension(path).Substring(1);
+            string outputPath = directory + @"\" + nameWithoutExtension + "_" + extension + @"\";
             string xmlOutputPath = path + ".xml";
 
             using (FileStream input = new FileStream(path, FileMode.Open))
