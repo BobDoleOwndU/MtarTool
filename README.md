@@ -13,7 +13,7 @@ will extract the .trk and .chnk files and all of the contained .gani files along
 
 **.gani**: MGSV's animation format.
 
-**.trk**: Main animation track for an Mtar Type 2 file.
+**.trk**: Description of all main animation tracks for an Mtar Type 2 file.
 
 **.chnk**: A chunk of data with an unknown purpose belonging to an Mtar Type 2 file.
 
