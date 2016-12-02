@@ -73,6 +73,8 @@ namespace MtarTool
 
                 xmlSerializer.Serialize(xmlOutput, file);
             } //using ends
+
+            NameResolver.WriteOutputList();
         } //method ReadArchive ends
 
         static void WriteArchive(string path)

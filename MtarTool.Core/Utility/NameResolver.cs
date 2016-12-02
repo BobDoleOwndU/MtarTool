@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 
@@ -8,6 +9,8 @@ namespace MtarTool.Core.Utility
     {
         static string[] dictionary = File.ReadAllLines(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\mtar_dictionary.txt");
         static string[] hashDictionary = HashDictionary(dictionary);
+
+        static List<string> outputList = new List<string>(0);
 
         const string ASSETS_CONST = "/Assets/";
 
@@ -69,6 +72,7 @@ namespace MtarTool.Core.Utility
                 if (text == hashDictionary[i])
                 {
                     Console.WriteLine(dictionary[i]);
+                    outputList.Add(hashDictionary[i] + " = " + dictionary[i]);
                     return dictionary[i];
                 } //if ends
             } //for ends
@@ -112,6 +116,11 @@ namespace MtarTool.Core.Utility
 
             return outputULong;
         } //method GetHashFromName ends
+
+        public static void WriteOutputList()
+        {
+            File.WriteAllLines(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\hashed_names.txt", outputList);
+        } //method WriteOutputList ends
 
         private static ulong GetStrCode32(string text)
         {
