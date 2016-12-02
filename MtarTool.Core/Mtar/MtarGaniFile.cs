@@ -34,8 +34,6 @@ namespace MtarTool.Core.Mtar
         {
             BinaryWriter writer = new BinaryWriter(output, Encoding.Default, true);
 
-            hash = NameResolver.GetHashFromName(name);
-
             writer.Write(hash);
             writer.WriteZeros(8);
         } //method Read ends

@@ -1,4 +1,5 @@
 ﻿using MtarTool.Core.Common;
+using MtarTool.Core.Utility;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -63,7 +64,14 @@ namespace MtarTool.Core.Mtar
             writer.Write(boneGroups);
             writer.WriteZeros(16);
 
-            for(int i = 0; i < files.Count; i++)
+            for (int i = 0; i < files.Count; i++)
+            {
+                files[i].hash = NameResolver.GetHashFromName(files[i].name);
+            } //for ends
+
+            files.Sort((x, y) => x.hash.CompareTo(y.hash));
+
+            for (int i = 0; i < files.Count; i++)
             {
                 files[i].Write(output);
             } //for ends
