@@ -1,6 +1,5 @@
 ﻿using MtarTool.Core.Common;
 using MtarTool.Core.Utility;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -42,8 +41,17 @@ namespace MtarTool.Core.Mtar
 
         public override void Export(Stream output, string path)
         {
-            for(int i = 0; i < files.Count; i++)
+            files.Sort((x, y) => x.offset.CompareTo(y.offset));
+
+            for (int i = 0; i < files.Count; i++)
             {
+                if(numberNames)
+                {
+                    string ganiPath = Path.GetDirectoryName(files[i].name);
+                    string ganiName = Path.GetFileName(files[i].name);
+                    files[i].name = ganiPath + i.ToString("0000") + "_" + ganiName;
+                } //if ends
+
                 Directory.CreateDirectory(Path.GetDirectoryName(path + files[i].name));
                 File.WriteAllBytes(path + files[i].name, files[i].ReadData(output));
             } //for ends
@@ -52,8 +60,7 @@ namespace MtarTool.Core.Mtar
         public override void Import(Stream output, string path)
         {
             string inputPath = Path.GetFileNameWithoutExtension(path);
-
-            Console.WriteLine(inputPath);
+            
             uint offset = (uint)output.Position;
             BinaryWriter writer = new BinaryWriter(output, Encoding.Default, true);
 

@@ -10,13 +10,22 @@ namespace MtarTool
 {
     class Program
     {
+        private static bool numberNames;
         private static XmlSerializer xmlSerializer = new XmlSerializer(typeof(ArchiveFile), new[] { typeof(MtarFile), typeof(MtarFile2) });
 
         static void Main(string[] args)
         {
             if(args.Length != 0)
             {
-                string path = args[0];
+                string path = Path.GetFullPath(args[0]);
+
+                if(args.Length > 1)
+                {
+                    if(args[1] == "-n")
+                    {
+                        numberNames = true;
+                    } //if ends
+                } //if ends
 
                 if(Path.GetExtension(path) == ".mtar")
                 {
@@ -66,6 +75,8 @@ namespace MtarTool
             using (FileStream xmlOutput = new FileStream(xmlOutputPath, FileMode.Create))
             {
                 T file = new T();
+
+                file.numberNames = numberNames;
 
                 file.name = Path.GetFileName(path);
                 file.Read(input);

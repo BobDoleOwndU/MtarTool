@@ -9,6 +9,8 @@ namespace MtarTool.Core.Common
         [XmlAttribute("Name")]
         public string name;
 
+        public bool numberNames = false;
+
         public abstract void Read(Stream input);
 
         public abstract void Export(Stream output, string path);

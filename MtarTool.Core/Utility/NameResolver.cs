@@ -83,6 +83,23 @@ namespace MtarTool.Core.Utility
 
         public static ulong GetHashFromName(string text)
         {
+            string ganiPath = Path.GetDirectoryName(text);
+            string ganiName = Path.GetFileName(text);
+
+            if(char.IsDigit(ganiName[0]) && ganiName[4] == '_')
+            {
+                string[] strings = ganiName.Split('_');
+
+                ganiName = "";
+                
+                for(int i = 1; i < strings.Length; i++)
+                {
+                    ganiName += strings[i];
+                } //for ends
+
+                text = ganiPath + ganiName;
+            } //if ends
+
             if (text.Contains(ASSETS_CONST))
             {
                 text = GetHashFromString(text);

@@ -68,12 +68,21 @@ namespace MtarTool.Core.Mtar
             mtarTrack.name = fileName;
             mtarChunk.name = fileName;
 
+            files.Sort((x, y) => x.offset.CompareTo(y.offset));
+
             Directory.CreateDirectory(Path.GetDirectoryName(path + "1.trk"));
             File.WriteAllBytes(path + mtarTrack.name + ".trk", mtarTrack.ReadData(output));
             File.WriteAllBytes(path + mtarChunk.name + ".chnk", mtarChunk.ReadData(output));
 
             for (int i = 0; i < files.Count; i++)
             {
+                if (numberNames)
+                {
+                    string ganiPath = Path.GetDirectoryName(files[i].name);
+                    string ganiName = Path.GetFileName(files[i].name);
+                    files[i].name = ganiPath + i.ToString("0000") + "_" + ganiName;
+                } //if ends
+
                 Directory.CreateDirectory(Path.GetDirectoryName(path + files[i].name + ".gani"));
                 File.WriteAllBytes(path + files[i].name + ".gani", files[i].ReadData(output));
 
