@@ -47,9 +47,17 @@ namespace MtarTool.Core.Mtar
             {
                 if(numberNames)
                 {
-                    string ganiPath = Path.GetDirectoryName(files[i].name);
+                    string ganiPath = Path.GetDirectoryName(files[i].name).Replace('\\', '/');
                     string ganiName = Path.GetFileName(files[i].name);
-                    files[i].name = ganiPath + i.ToString("0000") + "_" + ganiName;
+                    
+
+                    if (ganiPath != "")
+                    {
+                        ganiPath += "/";
+                    } //if ends
+
+                    ganiPath += i.ToString("0000") + "_" + ganiName;
+                    files[i].name = ganiPath;
                 } //if ends
 
                 Directory.CreateDirectory(Path.GetDirectoryName(path + files[i].name));

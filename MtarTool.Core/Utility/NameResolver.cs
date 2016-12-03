@@ -83,8 +83,9 @@ namespace MtarTool.Core.Utility
 
         public static ulong GetHashFromName(string text)
         {
-            string ganiPath = Path.GetDirectoryName(text);
-            string ganiName = Path.GetFileName(text);
+            Console.WriteLine(text);
+            string ganiPath = Path.GetDirectoryName(text).Replace('\\', '/');
+            string ganiName = Path.GetFileNameWithoutExtension(text);
 
             if(char.IsDigit(ganiName[0]) && ganiName[4] == '_')
             {
@@ -96,9 +97,14 @@ namespace MtarTool.Core.Utility
                 {
                     ganiName += strings[i];
                 } //for ends
-
-                text = ganiPath + ganiName;
             } //if ends
+
+            if (ganiPath != "")
+            {
+                ganiPath += "/";
+            } //if ends
+
+            text = ganiPath + ganiName;
 
             if (text.Contains(ASSETS_CONST))
             {
@@ -107,8 +113,6 @@ namespace MtarTool.Core.Utility
 
             string outputText = "";
             ulong outputULong = 0x0;
-
-            text = text.Replace(".gani", "");
 
             while (text.Length < 13)
             {
@@ -128,8 +132,6 @@ namespace MtarTool.Core.Utility
             } //switch ends
 
             outputULong = Convert.ToUInt64(outputText, 16);
-
-            Console.WriteLine(outputText);
 
             return outputULong;
         } //method GetHashFromName ends
