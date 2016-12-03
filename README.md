@@ -14,6 +14,10 @@ The tool will generate a hashed_names.txt file containing any unhashed name's ha
 
 Set the -n parameter to add a four digit id to the beginning of every file's name. The number keeps track of the order the files were stored in the .mtar.
 
+**Usage Example:**
+
+> MtarTool.exe Example.mtar -n
+
 ##File Format Descriptions:
 
 **.gani**: MGSV's animation format.
