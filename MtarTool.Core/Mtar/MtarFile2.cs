@@ -108,7 +108,7 @@ namespace MtarTool.Core.Mtar
 
         public override void Import(Stream output, string path)
         {
-            string inputPath = Path.GetFileNameWithoutExtension(path);
+            string inputPath = Path.GetDirectoryName(path) + @"\" + Path.GetFileNameWithoutExtension(path);
 
             Console.WriteLine(inputPath);
             uint offset = (uint)output.Position;

@@ -67,8 +67,8 @@ namespace MtarTool.Core.Mtar
 
         public override void Import(Stream output, string path)
         {
-            string inputPath = Path.GetFileNameWithoutExtension(path);
-            
+            string inputPath = Path.GetDirectoryName(path) + @"\" + Path.GetFileNameWithoutExtension(path);
+
             uint offset = (uint)output.Position;
             BinaryWriter writer = new BinaryWriter(output, Encoding.Default, true);
 
