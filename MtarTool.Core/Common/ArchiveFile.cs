@@ -9,6 +9,7 @@ namespace MtarTool.Core.Common
         [XmlAttribute("Name")]
         public string name;
 
+        [XmlIgnore]
         public bool numberNames = false;
 
         public abstract void Read(Stream input);
