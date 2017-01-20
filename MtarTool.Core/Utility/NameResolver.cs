@@ -89,15 +89,10 @@ namespace MtarTool.Core.Utility
 
             if(char.IsDigit(ganiName[0]) && ganiName[4] == '_')
             {
-                string[] strings = ganiName.Split('_');
-
-                ganiName = "";
-                
-                for(int i = 1; i < strings.Length; i++)
-                {
-                    ganiName += strings[i];
-                } //for ends
+                ganiName = ganiName.Substring(5);
             } //if ends
+
+            Console.WriteLine(ganiName);
 
             if (ganiPath != "")
             {
