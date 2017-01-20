@@ -92,8 +92,6 @@ namespace MtarTool.Core.Utility
                 ganiName = ganiName.Substring(5);
             } //if ends
 
-            Console.WriteLine(ganiName);
-
             if (ganiPath != "")
             {
                 ganiPath += "/";
