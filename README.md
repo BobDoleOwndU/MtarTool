@@ -3,7 +3,7 @@
 
 Allows you to extract MGSV's animation files (.gani) from the motion archive containers.
 
-##Usage:
+## Usage:
 
 Drag a .mtar file onto the tool. If it is an Mtar Type 1 file, the tool will simply extract the .gani files from it. If it is a Type 2 file, the tool will extract the .trk and .chnk files and all of the contained .gani files along
 with their .exchnk and .enchnk files.
@@ -18,7 +18,7 @@ Set the -n parameter to add a four digit id to the beginning of every file's nam
 
 > MtarTool.exe Example.mtar -n
 
-##File Format Descriptions:
+## File Format Descriptions:
 
 **.gani**: MGSV's animation format.
 
@@ -32,6 +32,6 @@ along with it.
 **.enchnk**: A chunk of animation at the bottom of an Mtar Type 2 file. Tied to a .gani file. Should be brought along with a swapped .gani
 file.
 
-##Credits:
+## Credits:
 
 Thanks to id-daemon (daemon1) for giving me helpful information about the Mtar Type 2 format.
