@@ -51,15 +51,15 @@ namespace MtarTool
             {
                 BinaryReader reader = new BinaryReader(input, Encoding.Default, true);
 
-                input.Position = 0x10;
-                uint type = reader.ReadUInt32();
+                input.Position = 0x28;
+                uint offset = reader.ReadUInt32();
 
-                if(type > 0)
-                {
-                    return 2;
-                } //if ends
+                reader.BaseStream.Position = offset;
 
-                return 1;
+                if (reader.ReadUInt32() == 0xBFCA2D2)
+                    return 1;
+
+                return 2;
             } //using ends
         } //method GetMtarType ends
 

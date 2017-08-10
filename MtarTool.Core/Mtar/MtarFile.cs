@@ -19,6 +19,9 @@ namespace MtarTool.Core.Mtar
         [XmlAttribute("BoneGroups")]
         public ulong boneGroups;
 
+        [XmlAttribute("BoneGroups2")]
+        public ulong boneGroups2;
+
         [XmlArray("Entries")]
         public List<MtarGaniFile> files = new List<MtarGaniFile>();
 
@@ -29,7 +32,8 @@ namespace MtarTool.Core.Mtar
             signature = reader.ReadUInt32();
             fileCount = reader.ReadUInt32();
             boneGroups = reader.ReadUInt64();
-            reader.Skip(16);
+            boneGroups2 = reader.ReadUInt64();
+            reader.Skip(8);
 
             for(int i = 0; i < fileCount; i++)
             {
@@ -77,7 +81,8 @@ namespace MtarTool.Core.Mtar
             writer.Write(signature);
             writer.Write(fileCount);
             writer.Write(boneGroups);
-            writer.WriteZeros(16);
+            writer.Write(boneGroups2);
+            writer.WriteZeros(8);
 
             for (int i = 0; i < files.Count; i++)
             {
