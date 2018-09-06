@@ -17,11 +17,23 @@ namespace MtarTool.Core.Mtar
         [XmlIgnore]
         public uint fileCount;
 
-        [XmlAttribute("BoneGroups")]
-        public ulong boneGroups;
+        [XmlAttribute("Unknown0")]
+        public ushort unknown0;
 
-        [XmlAttribute("BoneGroups2")]
-        public uint boneGroups2;
+        [XmlAttribute("Unknown1")]
+        public ushort unknown1;
+
+        [XmlAttribute("Unknown2")]
+        public ushort unknown2;
+
+        [XmlAttribute("Unknown3")]
+        public ushort unknown3;
+
+        [XmlAttribute("Unknown4")]
+        public ushort unknown4;
+
+        [XmlAttribute("Unknown5")]
+        public ushort unknown5;
 
         [XmlIgnore]
         public uint trackOffset;
@@ -41,8 +53,12 @@ namespace MtarTool.Core.Mtar
 
             signature = reader.ReadUInt32();
             fileCount = reader.ReadUInt32();
-            boneGroups = reader.ReadUInt64();
-            boneGroups2 = reader.ReadUInt32();
+            unknown0 = reader.ReadUInt16();
+            unknown1 = reader.ReadUInt16();
+            unknown2 = reader.ReadUInt16();
+            unknown3 = reader.ReadUInt16();
+            unknown4 = reader.ReadUInt16();
+            unknown5 = reader.ReadUInt16();
             trackOffset = reader.ReadUInt32();
 
             mtarTrack.offset = trackOffset;
@@ -57,22 +73,32 @@ namespace MtarTool.Core.Mtar
             } //for ends
 
             mtarTrack.Read(input);
-            input.Position = mtarTrack.offset + mtarTrack.size;
-            mtarChunk.offset = (uint)input.Position;
-            mtarChunk.GetSize(input);
+
+            input.Position = trackOffset + mtarTrack.chunkOffset;
+
+            if (mtarTrack.chunkOffset > 0)
+            {
+                mtarChunk.offset = (uint)input.Position;
+                mtarChunk.GetSize(input);
+            } //if
         } //method Read ends
 
         public override void Export(Stream output, string path)
         {
             string fileName = Path.GetFileNameWithoutExtension(Path.GetDirectoryName(path).Replace("_mtar", ".mtar"));
-            mtarTrack.name = fileName;
-            mtarChunk.name = fileName;
-
-            files.Sort((x, y) => x.offset.CompareTo(y.offset));
 
             Directory.CreateDirectory(Path.GetDirectoryName(path + "1.trk"));
+
+            mtarTrack.name = fileName;
             File.WriteAllBytes(path + mtarTrack.name + ".trk", mtarTrack.ReadData(output));
-            File.WriteAllBytes(path + mtarChunk.name + ".chnk", mtarChunk.ReadData(output));
+
+            if (mtarTrack.chunkOffset > 0)
+            {
+                mtarChunk.name = fileName;
+                File.WriteAllBytes(path + mtarChunk.name + ".chnk", mtarChunk.ReadData(output));
+            } //if
+
+            files.Sort((x, y) => x.offset.CompareTo(y.offset));
 
             for (int i = 0; i < files.Count; i++)
             {
@@ -111,16 +137,20 @@ namespace MtarTool.Core.Mtar
             string inputPath = Path.GetDirectoryName(path) + @"\" + Path.GetFileNameWithoutExtension(path);
 
             Console.WriteLine(inputPath);
-            uint offset = (uint)output.Position;
+            uint offset;
             BinaryWriter writer = new BinaryWriter(output, Encoding.Default, true);
 
             fileCount = (uint)files.Count;
 
             writer.Write(signature);
             writer.Write(fileCount);
-            writer.Write(boneGroups);
-            writer.Write(boneGroups2);
-            writer.WriteZeros(12);
+            writer.Write(unknown0);
+            writer.Write(unknown1);
+            writer.Write(unknown2);
+            writer.Write(unknown3);
+            writer.Write(unknown4);
+            writer.Write(unknown5);
+            writer.WriteZeros(0xC);
 
             for (int i = 0; i < files.Count; i++)
             {
@@ -136,12 +166,19 @@ namespace MtarTool.Core.Mtar
 
             offset = (uint)output.Position;
             byte[] track = File.ReadAllBytes(inputPath + @"_mtar\" + mtarTrack.name + ".trk");
-            output.Position = 0x14;
+            writer.BaseStream.Position = 0x14;
             writer.Write(offset);
-            output.Position = offset;
+            writer.BaseStream.Position = offset;
             writer.Write(track);
-            byte[] chunk = File.ReadAllBytes(inputPath + @"_mtar\" + mtarChunk.name + ".chnk");
-            writer.Write(chunk);
+
+            if (output.Position % 0x10 != 0)
+                writer.WriteZeros(0x10 - (int)output.Position % 0x10);
+
+            if (File.Exists(inputPath + @"_mtar\" + mtarChunk.name + ".chnk"))
+            {
+                byte[] chunk = File.ReadAllBytes(inputPath + @"_mtar\" + mtarChunk.name + ".chnk");
+                writer.Write(chunk);
+            } //if
 
             for (int i = 0; i < files.Count; i++)
             {
